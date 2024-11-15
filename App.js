@@ -1,88 +1,95 @@
 import React from 'react';
 import { StyleSheet, View, FlatList, Text, TouchableOpacity, Image } from 'react-native';
 
-const ELEMENTS = {
-  Fire: { color: 'rgba(255,69,0,0.6)', icon: '🔥' },
-  Water: { color: 'rgba(30,144,255,0.42)', icon: '💧' },
-  Grass: { color: 'rgba(50,205,50,0.4)', icon: '🌿' },
-  Electric: { color: 'rgba(255,215,0,0.39)', icon: '⚡' },
-  Psychic: { color: 'rgba(147,112,219,0.66)', icon: '🧠' },
+// Constants
+const TYPE_COLORS = {
+  Fire: 'rgba(255,69,0,0.6)',
+  Water: 'rgba(30,144,255,0.42)',
+  Grass: 'rgba(50,205,50,0.4)',
+  Electric: 'rgba(255,215,0,0.39)',
+  Psychic: 'rgba(147,112,219,0.66)',
 };
 
-const POKEMONS = {
+const TYPE_ICONS = {
+  Fire: '',
+  Water: '',
+  Grass: '',
+  Electric: '',
+  Psychic: '',
+};
+
+const POKEMON_DATA = {
   Fire: [
-    { name: 'Charmander', id: 4 },
-    { name: 'Vulpix', id: 37 },
+    { id: 4, name: 'Charmander' },
+    { id: 37, name: 'Vulpix' },
   ],
   Water: [
-    { name: 'Squirtle', id: 7 },
-    { name: 'Psyduck', id: 54 },
+    { id: 7, name: 'Squirtle' },
+    { id: 54, name: 'Psyduck' },
   ],
   Grass: [
-    { name: 'Bulbasaur', id: 1 },
-    { name: 'Oddish', id: 43 },
+    { id: 1, name: 'Bulbasaur' },
+    { id: 43, name: 'Oddish' },
   ],
   Electric: [
-    { name: 'Pikachu', id: 25 },
-    { name: 'Magnemite', id: 81 },
+    { id: 25, name: 'Pikachu' },
+    { id: 81, name: 'Magnemite' },
   ],
   Psychic: [
-    { name: 'Abra', id: 63 },
-    { name: 'Psyduck', id: 54 }, // Reusing Psyduck for demonstration
+    { id: 63, name: 'Abra' },
+    { id: 54, name: 'Psyduck' },
   ],
 };
 
-const getPokemonImageUrl = (id) => `https://dz3we2x72f7ol.cloudfront.net/expansions/151/en-us/SV3pt5_EN_${id}-2x.png`;
+// Helper function to get Pokémon image URL
+const getPokemonImage = (id) => `https://dz3we2x72f7ol.cloudfront.net/expansions/151/en-us/SV3pt5_EN_${id}-2x.png`;
 
-const PokemonItem = ({ pokemon }) => (
-    <TouchableOpacity style={styles.item}>
-      <Text style={styles.name}>{pokemon.name}</Text>
-      <Image source={{ uri: getPokemonImageUrl(pokemon.id) }} style={styles.image} />
+// Pokémon item component
+const PokemonItem = ({ name, id }) => (
+    <TouchableOpacity style={styles.pokemonItem}>
+      <Text style={styles.pokemonName}>{name}</Text>
+      <Image source={{ uri: getPokemonImage(id) }} style={styles.pokemonImage} />
     </TouchableOpacity>
 );
 
-const PokemonList = ({ element }) => (
-    <View style={[styles.section, { backgroundColor: ELEMENTS[element].color }]}>
-      <Text style={styles.header}>{ELEMENTS[element].icon} {element}</Text>
+// Pokémon list component
+const PokemonList = ({ type }) => (
+    <View style={[styles.pokemonList, { backgroundColor: TYPE_COLORS[type] }]}>
+      <Text style={styles.pokemonListHeader}>{TYPE_ICONS[type]} {type}</Text>
       <FlatList
-          data={POKEMONS[element]}
-          renderItem={({ item }) => <PokemonItem pokemon={item} />}
+          data={POKEMON_DATA[type]}
+          renderItem={({ item }) => <PokemonItem {...item} />}
           keyExtractor={(item) => item.id.toString()}
       />
     </View>
 );
 
+// Main app component
 const App = () => {
-  // Create a combined array of sections for FlatList
-  const sections = Object.keys(POKEMONS).map((element) => ({
-    title: element,
-    data: POKEMONS[element],
-  }));
+  const types = Object.keys(POKEMON_DATA);
 
   return (
-      <FlatList
-          data={sections}
-          renderItem={({ item }) => (
-              <PokemonList element={item.title} />
-          )}
-          keyExtractor={(item) => item.title}
-          ListHeaderComponent={
-            <>
-              <Text style={styles.title}>My Pokémon Card List</Text>
-              <TouchableOpacity style={styles.addButton}>
-                <Text style={styles.buttonText}>Add Pokémon</Text>
-              </TouchableOpacity>
-            </>
-          }
-      />
+      <View style={styles.container}>
+        <Text style={styles.title}>My Pokémon Card List</Text>
+        <TouchableOpacity style={styles.addButton}>
+          <Text style={styles.buttonText}>Add Pokémon</Text>
+        </TouchableOpacity>
+        <FlatList
+            data={types}
+            renderItem={({ item }) => <PokemonList type={item} />}
+            keyExtractor={(item) => item}
+        />
+      </View>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 20,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,
@@ -99,20 +106,20 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
   },
-  section: {
+  pokemonList: {
     marginBottom: 20,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  header: {
+  pokemonListHeader: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     borderBottomWidth: 2,
     borderBottomColor: '#000000',
   },
-  item: {
+  pokemonItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -120,10 +127,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  name: {
+  pokemonName: {
     fontSize: 18,
   },
-  image: {
+  pokemonImage: {
     width: 100,
     height: 140,
   },
