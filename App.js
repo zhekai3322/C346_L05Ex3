@@ -11,11 +11,11 @@ const TYPE_COLORS = {
 };
 
 const TYPE_ICONS = {
-  Fire: '',
-  Water: '',
-  Grass: '',
-  Electric: '',
-  Psychic: '',
+  Fire: '🔥',
+  Water: '💧',
+  Grass: '🌿',
+  Electric: '⚡',
+  Psychic: '🧠',
 };
 
 const POKEMON_DATA = {
@@ -89,12 +89,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#778380',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: 'white',
   },
   addButton: {
     backgroundColor: '#4CAF50',
